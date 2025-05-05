@@ -3,6 +3,8 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import 'login_screen.dart'; // Ensure this import exists
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easyqueue_app/screens/login_screen.dart';
+
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -81,15 +83,16 @@ class WelcomeScreen extends StatelessWidget {
                 height: 45,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to Login Screen
-                    // Navigator.push(
-                    // context,
-                    //MaterialPageRoute(
-                    //builder: (context) => const LoginScreen()),
-                    //);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                    );
                   },
+
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 51, 221, 135), // Match UI color
+                    backgroundColor:
+                        Color.fromARGB(255, 51, 221, 135), // Match UI color
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(15), // Fully rounded button

@@ -1,47 +1,34 @@
 import 'package:flutter/material.dart';
+import '../utils/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
-  final String text;
+  final String label;
   final VoidCallback onPressed;
-  final Color? color;
-  final Color? textColor;
-  final double? width;
-  final double? height;
-  final bool isLoading;
+  final ButtonStyle? style; // ✅ make it optional
+  final Widget? child; // ✅ NEW
 
   const CustomButton({
-    Key? key,
-    required this.text,
+    super.key,
+    required this.label,
     required this.onPressed,
-    this.color = Colors.blue,
-    this.textColor = Colors.white,
-    this.width = double.infinity,
-    this.height = 50.0,
-    this.isLoading = false,
-  }) : super(key: key);
+    this.style, // ✅ allow it to be null
+    this.child, // ✅ NEW
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
-      height: height,
+      height: 50,
+      width: double.infinity,
       child: ElevatedButton(
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
+          backgroundColor: buttonColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(15),
           ),
         ),
-        onPressed: isLoading ? null : onPressed,
-        child: isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : Text(
-                text,
-                style: TextStyle(
-                    color: textColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
-              ),
+        child: Text(label, style: const TextStyle(color: Colors.white)),
       ),
     );
   }

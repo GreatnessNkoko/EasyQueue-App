@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "499788626361",
+    "project_id": "easyqueue-mobile-4f3dd",
+    "storage_bucket": "easyqueue-mobile-4f3dd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499788626361:android:d05a7751571024e9d01e68",
+        "android_client_info": {
+          "package_name": "com.example.easyqueue_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHNp4EFNtIPtja1qQR5CuXiSvEpLFq_9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

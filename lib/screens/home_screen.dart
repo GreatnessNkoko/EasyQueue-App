@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("EasyQueue Home")),
-      body: Center(child: Text("Welcome to EasyQueue!")),
+      body: Center(child: Text("Welcome to EasyQueue Dashboard")),
     );
   }
 }
