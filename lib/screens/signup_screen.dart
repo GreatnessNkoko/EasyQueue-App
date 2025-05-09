@@ -63,50 +63,73 @@ class SignupScreen extends StatelessWidget {
                   Text(authProvider.error,
                       style: const TextStyle(color: Colors.red)),
                 const SizedBox(height: 20),
-                CustomButton(
-                  label: authProvider.isLoading ? '' : 'SIGN UP',
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
+
+                /// 🌟 SIGN UP Button with loading spinner inside
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: buttonColor,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    onPressed: authProvider.isLoading
+                        ? null
+                        : () async {
+                            FocusScope.of(context).unfocus();
+                            authProvider.clearError();
+
+                            if (nameCtrl.text.isEmpty ||
+                                emailCtrl.text.isEmpty ||
+                                passCtrl.text.isEmpty ||
+                                phoneCtrl.text.isEmpty) {
+                              authProvider
+                                  .setError('Please fill in all fields');
+                              return;
+                            }
+
+                            if (passCtrl.text.length < 6) {
+                              authProvider.setError(
+                                  'Password must be at least 6 characters');
+                              return;
+                            }
+
+                            final success = await authProvider.signup(
+                              emailCtrl.text,
+                              passCtrl.text,
+                            );
+
+                            if (success) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const HomeScreen()),
+                                (route) => false,
+                              );
+                            }
+                          },
+                    child: authProvider.isLoading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 3,
+                            ),
+                          )
+                        : const Text(
+                            'SIGN UP',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
-                  onPressed: () async {
-                    FocusScope.of(context).unfocus();
-                    authProvider.clearError();
-
-                    if (nameCtrl.text.isEmpty ||
-                        emailCtrl.text.isEmpty ||
-                        passCtrl.text.isEmpty ||
-                        phoneCtrl.text.isEmpty) {
-                      authProvider.setError('Please fill in all fields');
-                      return;
-                    }
-
-                    if (passCtrl.text.length < 6) {
-                      authProvider
-                          .setError('Password must be at least 6 characters');
-                      return;
-                    }
-
-                    final success = await authProvider.signup(
-                        emailCtrl.text, passCtrl.text);
-                    if (success) {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (_) => const HomeScreen()),
-                        (route) => false,
-                      );
-                    }
-                  },
-                  child: authProvider.isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white, strokeWidth: 2)
-                      : const Text(
-                          'SIGN UP',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
                 ),
+
                 const SizedBox(height: 30),
                 Center(
                   child: GestureDetector(

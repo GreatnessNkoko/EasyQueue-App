@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = Provider.of<AuthProvider>(context);
 
     return WillPopScope(
-      onWillPop: () async => false, // Disable back button
+      onWillPop: () async => false,
       child: Scaffold(
         backgroundColor: primaryColor,
         body: Padding(
@@ -58,9 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 CustomInputField(hintText: 'Email', controller: emailCtrl),
                 const SizedBox(height: 20),
                 CustomInputField(
-                    hintText: 'Password',
-                    controller: passCtrl,
-                    obscureText: true),
+                  hintText: 'Password',
+                  controller: passCtrl,
+                  obscureText: true,
+                ),
                 const SizedBox(height: 20),
                 Row(
                   children: [
@@ -94,45 +95,70 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (authProvider.error.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(authProvider.error,
-                        style: const TextStyle(color: Colors.red)),
+                    child: Text(
+                      authProvider.error,
+                      style: const TextStyle(color: Colors.red),
+                    ),
                   ),
                 const SizedBox(height: 30),
+
+                /// ✅ Styled login button with colorful spinner
                 CustomButton(
                   label: authProvider.isLoading ? '' : 'LOGIN',
                   style: ElevatedButton.styleFrom(
                     backgroundColor: buttonColor,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  onPressed: () async {
-                    FocusScope.of(context).unfocus();
-                    authProvider.clearError();
+                  onPressed: () {
+                    if (authProvider.isLoading) return;
 
-                    if (emailCtrl.text.isEmpty || passCtrl.text.isEmpty) {
-                      authProvider.setError('Please fill in all fields');
-                      return;
-                    }
+                    () async {
+                      FocusScope.of(context).unfocus();
+                      authProvider.clearError();
 
-                    final success =
-                        await authProvider.login(emailCtrl.text, passCtrl.text);
-                    if (success) {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (_) => const HomeScreen()),
-                        (route) => false,
+                      if (emailCtrl.text.isEmpty || passCtrl.text.isEmpty) {
+                        authProvider.setError('Please fill in all fields');
+                        return;
+                      }
+
+                      final success = await authProvider.login(
+                        emailCtrl.text,
+                        passCtrl.text,
                       );
-                    }
+
+                      if (success) {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => const HomeScreen()),
+                          (route) => false,
+                        );
+                      }
+                    }();
                   },
+
+                  // 🌈 Beautiful spinner while loading
                   child: authProvider.isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white, strokeWidth: 2)
+                      ? const SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 3,
+                          ),
+                        )
                       : const Text(
                           'LOGIN',
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                 ),
+
                 const SizedBox(height: 35),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -150,7 +176,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text(
                         "Sign Up",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ],
