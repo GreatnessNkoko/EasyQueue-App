@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../services/firestore_service.dart';
 import '../utils/app_colors.dart';
 
@@ -60,7 +61,8 @@ class _JoinQueueScreenState extends State<JoinQueueScreen> {
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
                         "Join Queue",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
                       ),
               ),
             ),
@@ -89,10 +91,8 @@ class _JoinQueueScreenState extends State<JoinQueueScreen> {
     });
 
     try {
-      // Auto-generate a pseudo token (in real world, you'd handle queue logic better)
       final token = DateTime.now().millisecondsSinceEpoch % 10000;
 
-      // ✅ Firestore call to add the document with createdAt
       await _firestoreService.joinQueue(
         token: token,
         service: service,
@@ -101,6 +101,11 @@ class _JoinQueueScreenState extends State<JoinQueueScreen> {
       setState(() {
         feedback = "Successfully joined the queue!";
         _serviceController.clear();
+      });
+
+      // ✅ Return to HomeScreen with small delay
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pop(context);
       });
     } catch (e) {
       setState(() => feedback = "Error: ${e.toString()}");

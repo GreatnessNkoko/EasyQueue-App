@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -21,7 +22,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
+  // Login
   Future<bool> login(String email, String password) async {
     _isLoading = true;
     _error = '';
@@ -40,14 +41,27 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> signup(String email, String password) async {
+  // Signup with storing user info in Firestore
+  Future<bool> signup(String email, String password,
+      {String role = "student"}) async {
     _isLoading = true;
     _error = '';
     notifyListeners();
 
     try {
-      await _auth.createUserWithEmailAndPassword(
+      final userCred = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+
+      // Save user role in Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCred.user!.uid)
+          .set({
+        'email': email,
+        'role': role,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
       _isLoading = false;
       notifyListeners();
       return true;
@@ -58,6 +72,7 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
   }
+
 
   String _getFirebaseError(FirebaseAuthException e) {
     switch (e.code) {
